@@ -8,7 +8,7 @@ ros::ServiceClient client;
 // This function calls the command_robot service to drive the robot in the specified direction
 void drive_robot(float lin_x, float ang_z)
 {
-    // TODO: Request a service and pass the velocities to it to drive the robot
+    // Request a service and pass the velocities to it to drive the robot
     ROS_INFO_STREAM("Moving robot toward the white ball");
 
     ball_chaser::DriveToTarget srv;
@@ -27,7 +27,7 @@ void process_image_callback(const sensor_msgs::Image img)
     int image_height = img.height;
     int image_width = img.width;
 
-    // TODO: Loop through each pixels in the image and check if there is a bright white one
+    // Loop through each pixels in the image and check if there is a bright white one
     // Then, identify if this pixel falls in the left, mid, or right side of the image
     // Depending on the white ball position, call the drive_bot function and pass the velocities to it
     // Request a stop when there is no white ball seen by the camera
