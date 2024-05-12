@@ -9,7 +9,7 @@ ros::ServiceClient client;
 void drive_robot(float lin_x, float ang_z)
 {
     // Request a service and pass the velocities to it to drive the robot
-    ROS_INFO_STREAM("Moving robot toward the white ball");
+    //ROS_INFO_STREAM("Moving robot toward the white ball");
 
     ball_chaser::DriveToTarget srv;
     srv.request.linear_x = lin_x;
@@ -41,16 +41,20 @@ void process_image_callback(const sensor_msgs::Image img)
             
             if (r == white_pixel && g == white_pixel && b == white_pixel) {
                 if (j < image_width / 3) {
+                    ROS_INFO_STREAM("White Ball at the left side");
                     drive_robot(0.0, 0.5);
                 }
                 else if (j < 2 * image_width / 3) {
+                    ROS_INFO_STREAM("White Ball in front");
                     drive_robot(0.5, 0.0);
                 }
                 else {
+                    ROS_INFO_STREAM("White Ball at the right side");
                     drive_robot(0.0, -0.5);
                 }
             }
             else {
+                ROS_INFO_STREAM("White Ball is not seen");
                 drive_robot(0.0, 0.0);
             }
         }
