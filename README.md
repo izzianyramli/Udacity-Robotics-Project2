@@ -1,7 +1,7 @@
 # Udacity-Robotics-Project2
 Udacity Robotics Software Engineer Nanodegree - Project 2: Go Chase It!
 
-![Alt test] (GoChaseIt.png)
+![Alt text](GoChaseIt.png)
 
 
 ## Build and Launch
