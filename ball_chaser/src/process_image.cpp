@@ -9,7 +9,7 @@ ros::ServiceClient client;
 void drive_robot(float lin_x, float ang_z)
 {
     // Request a service and pass the velocities to it to drive the robot
-    //ROS_INFO_STREAM("Moving robot toward the white ball");
+    ROS_INFO_STREAM("Moving robot toward the white ball");
 
     ball_chaser::DriveToTarget srv;
     srv.request.linear_x = lin_x;
@@ -24,40 +24,41 @@ void drive_robot(float lin_x, float ang_z)
 void process_image_callback(const sensor_msgs::Image img)
 {
     int white_pixel = 255;
-    int image_height = img.height;
-    int image_width = img.width;
+    
+    // Define the state of the robot based on the position of the white ball detected
+    enum position : uint8_t {LEFT, MIDDLE, RIGHT, STOP} position = STOP;
 
     // Loop through each pixels in the image and check if there is a bright white one
     // Then, identify if this pixel falls in the left, mid, or right side of the image
     // Depending on the white ball position, call the drive_bot function and pass the velocities to it
     // Request a stop when there is no white ball seen by the camera
-    for (int i = 0; i < img.height; i++) {
-        for (int j = 0; j < img.width; j++) {
-            int pixel_index = i * image_width + j;
-            
-            int r = img.data[3 * pixel_index];
-            int g = img.data[3 * pixel_index + 1];
-            int b = img.data[3 * pixel_index + 2];
-            
-            if (r == white_pixel && g == white_pixel && b == white_pixel) {
-                if (j < image_width / 3) {
-                    ROS_INFO_STREAM("White Ball at the left side");
-                    drive_robot(0.0, 0.5);
-                }
-                else if (j < 2 * image_width / 3) {
-                    ROS_INFO_STREAM("White Ball in front");
-                    drive_robot(0.5, 0.0);
-                }
-                else {
-                    ROS_INFO_STREAM("White Ball at the right side");
-                    drive_robot(0.0, -0.5);
-                }
+    for (int i = 0; i < img.height * img.step; i+=3) {
+        int r = img.data[i];
+        int g = img.data[i+1];
+        int b = img.data[i+2];
+
+        if (r == white_pixel && g == white_pixel && b == white_pixel) {
+            auto j = i % img.step;
+            if (j < img.step / 3) {
+                position = LEFT;
+            }
+            else if (j < 2 * img.step / 3) {
+                position = RIGHT;
             }
             else {
-                ROS_INFO_STREAM("White Ball is not seen");
-                drive_robot(0.0, 0.0);
+                position = MIDDLE;
             }
+            break;
         }
+    }
+
+    // Give command to the robot to move based on the position of the white ball
+    switch(position)
+    {
+        case LEFT:      drive_robot(0.5, 1.0);
+        case MIDDLE:    drive_robot(0.5, 0.0);
+        case RIGHT:     drive_robot(0.5, -1.0);
+        case STOP:      drive_robot(0.0, 0.0);
     }
 }
 
