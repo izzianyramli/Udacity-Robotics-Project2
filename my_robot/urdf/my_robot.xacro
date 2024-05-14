@@ -203,19 +203,19 @@
   </joint>
 
   <gazebo reference="left_wheel">
-    <material>Gazebo/Green</material>
-  </gazebo>
-
-  <gazebo reference="right_wheel">
-    <material>Gazebo/Green</material>
-  </gazebo>
-
-  <gazebo reference="chassis">
     <material>Gazebo/Blue</material>
   </gazebo>
 
-  <gazebo reference="camera">
+  <gazebo reference="right_wheel">
+    <material>Gazebo/Blue</material>
+  </gazebo>
+
+  <gazebo reference="chassis">
     <material>Gazebo/Red</material>
+  </gazebo>
+
+  <gazebo reference="camera">
+    <material>Gazebo/Green</material>
   </gazebo>
 
   <xacro:include filename="$(find my_robot)/urdf/my_robot.gazebo"/>
